@@ -1,0 +1,47 @@
+%LEAST COST for minimization
+
+clc
+clear all
+c = [14 56 48 27; 8 35 21 81; 99 31 71 63];
+s = [13 19 16];
+d = [7 14 21 6];
+
+if sum(s) == sum(d)
+    fprintf('Balanced');
+
+else
+    fprintf('Unbalanced');
+    if sum(s)>sum(d)
+        c(:,end+1) = zeros(length(s),1)
+        d(end+1) = sum(s)-sum(d);
+
+    else
+        c(end+1,:) = zeros(1,length(d))
+        s(end+1) = sum(d)-sum(s);
+    end
+end
+
+ic = c;
+
+x = zeros (size(c));
+for k =1 : size(c,1)
+
+    for t = 1 : size(c,2)
+        h = min(min(c));
+        [ri, ci] = find(h==c)
+        x1 = min(s(ri), d(ci))
+        [value index] = max(x1);
+
+        i = ri(index);
+        j = ci(index);
+        val = min(s(i),d(j));
+        x(i,j) = val;
+        s(i) = s(i) - val;
+        d(j) = d(j) - val;
+        c(i,j) = Inf;
+    end
+end
+
+mincost = sum(sum(ic.*x))
+fprintf('mincost is %f', mincost);
+
