@@ -1,0 +1,51 @@
+%Simplex Method
+clear all
+
+c=[4 3 6 0 0 0];
+b=[440;470;430];
+A=[2 3 2 1 0 0 ; 4 0 3 0 1 0 ; 2 5 0 0 0 1];
+%m=size(A,1);
+%n=size(A,2);
+[m,n]=size(A);
+
+bv_index=n-m+1:1:n;
+Y=[A b];
+
+for s=1:50
+    cb=c(bv_index);
+    xb=Y(:,end)
+    z=cb*xb;
+    zjcj=cb*Y(:,1:n)-c
+
+    if zjcj>=0
+        disp("optimal sol achieved");
+        xb
+        basic_variables=bv_index
+        fprintf("optimal objective function value=%f",z);
+        break
+    else
+        [a,EV]=min(zjcj)
+        if Y(:,EV)<0
+            disp("Unbounded Solution")
+        else
+            for j=1:m
+                if Y(j,EV)>0
+                    ratio(j)=xb(j)/Y(j,EV)
+                else
+                    ratio(j)=1000
+                end
+            end
+        end
+        [k ,LV]=min(ratio)
+        bv_index(LV)=EV
+    end
+    pivot=Y(LV,EV);
+    Y(LV,:)=Y(LV,:)./pivot;
+    for i=1:m
+        if i~=LV
+            Y(i,:)=Y(i,:)-Y(i,EV)*Y(LV,:);
+        end
+    end
+Y
+end
+s
